@@ -11,13 +11,13 @@ import matplotlib.pyplot as plt
 from scipy.special import eval_hermite
 from scipy.special import factorial
 
-#4.1
+#1
 def eq41(y, t):
 # y[0] omega (theta prima)
 # y[1] theta
 # return omegaprima, thetaprima
     return -g/L*np.sin(y[1])+(-b*y[0]+A*np.cos(Omega*t))/(m*L**2) , y[0]
-#Defineixo la ecuació diferencial
+#Defining ODE
 
 g = 1
 L = 1
@@ -30,7 +30,7 @@ A = 1.35
 t = np.linspace(1, 100, 10000)
 ci = [0, 0.01*np.pi]
 res = spi.odeint(eq41, ci, t)
-#Soluciono la equdif
+#Solving ODE
 
 plt.figure()
 plt.suptitle("Pèndol esmorteït i forçat")
@@ -38,21 +38,21 @@ plt.plot(t, res[:, 0], label = "Omega")
 plt.plot(t, res[:, 1], label = "Theta")
 plt.grid(True)
 plt.legend(loc="lower left")
-#Grafico
+#Graphic
 
-#4.2
+#2
 def eq42(psi, x):
 # psi[0] = psi
 # psi[1] = psiprima
     return psi[1], -B*((2*n+1)-B*x**2)*psi[0]
-#Defineixo la ecuació diferencial
+#Defining ODE
 
 B = 1
 x = np.linspace(-5, 5, 1000)
 x1 = np.linspace(0, 5, 500)
 x2 = np.linspace(0, -5, 500)
 ci = np.array([[0.751126, 0.], [-0.531125, 0.], [0.459969, 0.]])
-#Separo x en dos arrays, un creixent i un decreixent. Creo un array d'arrays indexats que recorrerà un bucle
+#Separate x in two arrays. Create an array of indexed arrays
 
 plt.figure(figsize=(6, 12))
 plt.suptitle("Oscil·lador harmònic quàntic")
@@ -69,17 +69,17 @@ for n in range (0, 5, 2):
     plt.legend(loc="lower left")
     plt.ylim(-0.6, 0.8)
     plt.xlim(-5, 5)
-    #Grafico les funcions d'Hermite
+    #Graph the imported Hermite functions
     
     cin = ci[n//2]
-    #Faig servir les c.i. indexades
+    #Indexed i.c.
     res1 = spi.odeint(eq42, cin, x1)
     res2 = spi.odeint(eq42, cin, x2)
-    #Resolc les equacions diferencials per x<0 i x>0 per separat
+    #Solve ODE for x1 and x2 separate
     res2inv = res2[::-1, :]
-    #Inverteixo la solució negativa per que vagi de -5 a 0
+    #Invert x2 solution 
     res = np.vstack((res2inv, res1))
-    #Ajunto els dos arrays de la solució
+    #Stack both solutions
     plt.subplot(212)
     plt.title("Equació diferencial")
     plt.grid(True)
@@ -89,16 +89,16 @@ for n in range (0, 5, 2):
     plt.legend(loc="lower left")
     plt.ylim(-0.6, 0.8)
     plt.xlim(-5, 5)
-    #Grafico
+    #Graphic
 
-#4.3
+#3
 def eq43(x, t):
 # x[0] = x1
 # x[1] = v1
 # x[2] = x2
 # x[3] = v2
     return x[1], (k2*x[2]-(k1+k2)*x[0])/m, x[3], (k2*x[0]-(k1+k2)*x[2])/m
-#Defineixo les ecuacions diferencials
+#Define ODE
 
 m = 1
 k1 = 10
@@ -108,7 +108,7 @@ k2 = 0.5
 ci = [1, 0, 0, 0]
 t = np.linspace(0, 40, 1000)
 res = spi.odeint(eq43, ci, t)
-#Soluciono la ecuació
+#Solve
 
 plt.figure(figsize=(6, 12))
 plt.suptitle("Oscil·ladors acoblats")
@@ -121,7 +121,7 @@ plt.grid(True)
 plt.plot(t, res[:, 0], label = r"$x_1$")
 plt.plot(t, res[:, 2], label = r"$x_2$")
 plt.legend(loc="lower left")
-#Gràfic de la posició
+#x graph
 
 plt.subplot(212)
 plt.title("v(t)")
@@ -131,43 +131,43 @@ plt.grid(True)
 plt.plot(t, res[:, 1], label = r"$v_1$")
 plt.plot(t, res[:, 3], label = r"$v_2$")
 plt.legend(loc="lower left")
-#Gràfic de la velocitat
+#v graph
 
-#4.4
+#4
 def eq44(x, t):
 # x[0] = x
 # x[1] = vx
 # x[2] = y
 # x[3] = vy
     return x[1], -(G*M*x[0])/((x[0]**2 + x[2]**2)**(3/2)), x[3], -(G*M*x[2])/((x[0]**2 + x[2]**2)**(3/2)) 
-#Defineixo les equacions diferencials
+#Define ODE
 
 G = 6.67e-11 
 M = 1.9891e30 
 au = 1.49598e11 
-#Dades generals
+#Data
 
 aphelionH = 35.082 * au
 velapH = 0.869e3 
 TH = 3.15576e7 * 75.32
-#Dades Halley
+#Halley data
 
 aphelionT = 1.0167 * au
 velapT = 29260
 TT = 365.2564 * 24 * 60 * 60
-#Dades Terra
+#Earth data
 
 ciH = (aphelionH, 0, 0, velapH)
 tH = np.linspace(0, TH, 10000)
 solH = spi.odeint(eq44, ciH, tH)
 vH = np.sqrt(solH[:, 1] **2 + solH[:, 3] **2)
-#Solucins Halley
+#Halley solutions
 
 ciT = (aphelionT, 0, 0, velapT)
 tT = np.linspace(0, TT, 10000)
 solT = spi.odeint(eq44, ciT, tT)
 vT = np.sqrt(solT[:, 1] **2 + solT[:, 3] **2)
-#Solucins Terra
+#Earth solutions
 
 plt.figure(figsize=(8, 8))
 plt.suptitle("Halley")
@@ -200,7 +200,7 @@ plt.legend(loc="upper left")
 plt.xlim(-2e11, 5.3e12)
 plt.ylim(-2.75e12, 2.75e12)
 plt.tight_layout()
-#Gràfics Halley
+#Halley graphs
 
 plt.figure(figsize=(8, 8))
 plt.suptitle("Terra")
@@ -231,4 +231,5 @@ plt.plot(solT[:, 0], solT[:, 2])
 plt.xlim(-1.6e11, 1.6e11)
 plt.ylim(-1.6e11, 1.6e11)
 plt.tight_layout()
-#Gràfics Terra
+#Earth graphs
+
